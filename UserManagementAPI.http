@@ -1,0 +1,228 @@
+### Variables
+@baseUrl = http://localhost:5001
+@token = auth_token
+
+### Test 1: Get all users - Without token (should return 401)
+GET {{baseUrl}}/users
+
+### Test 2: Get all users - With valid token (should return 200)
+GET {{baseUrl}}/users
+x-auth: {{token}}
+
+### Test 3: Get user by ID - Valid ID with token (should return 404 if no users exist)
+GET {{baseUrl}}/users/1
+x-auth: {{token}}
+
+### Test 4: Get user by ID - Invalid ID (should return 400)
+GET {{baseUrl}}/users/0
+x-auth: {{token}}
+
+### Test 5: Get user by ID - Without token (should return 401)
+GET {{baseUrl}}/users/1
+
+### Test 6: Create user - Valid data (should return 201)
+POST {{baseUrl}}/users
+x-auth: {{token}}
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "phone": "+1234567890"
+}
+
+### Test 7: Create user - Without token (should return 401)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+    "name": "Jane Doe",
+    "email": "jane.doe@example.com",
+    "phone": "+1234567891"
+}
+
+### Test 8: Create user - Missing name (should return 400)
+POST {{baseUrl}}/users
+x-auth: {{token}}
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "phone": "+1234567892"
+}
+
+### Test 9: Create user - Missing email (should return 400)
+POST {{baseUrl}}/users
+x-auth: {{token}}
+Content-Type: application/json
+
+{
+    "name": "Test User",
+    "phone": "+1234567893"
+}
+
+### Test 10: Create user - Invalid email format (should return 400)
+POST {{baseUrl}}/users
+x-auth: {{token}}
+Content-Type: application/json
+
+{
+    "name": "Test User",
+    "email": "invalid-email",
+    "phone": "+1234567894"
+}
+
+### Test 11: Create user - Empty phone (should return 400)
+POST {{baseUrl}}/users
+x-auth: {{token}}
+Content-Type: application/json
+
+{
+    "name": "Test User",
+    "email": "test2@example.com",
+    "phone": ""
+}
+
+
+### Test 13: Create second user - Valid data (should return 201)
+POST {{baseUrl}}/users
+x-auth: {{token}}
+Content-Type: application/json
+
+{
+    "name": "Jane Smith",
+    "email": "jane.smith@example.com",
+    "phone": "+1234567896"
+}
+
+### Test 14: Create user - Duplicate email (should return 400)
+POST {{baseUrl}}/users
+x-auth: {{token}}
+Content-Type: application/json
+
+{
+    "name": "Another User",
+    "email": "john.doe@example.com",
+    "phone": "+1234567897"
+}
+
+### Test 15: Get user by ID - Existing user (should return 200)
+GET {{baseUrl}}/users/1
+x-auth: {{token}}
+
+### Test 16: Get user by ID - Non-existing user (should return 404)
+GET {{baseUrl}}/users/999
+x-auth: {{token}}
+
+### Test 17: Update user - Valid data (should return 200)
+PUT {{baseUrl}}/users/1
+x-auth: {{token}}
+Content-Type: application/json
+
+{
+    "name": "John Doe Updated",
+    "email": "john.doe.updated@example.com",
+    "phone": "+1234567898"
+}
+
+### Test 18: Update user - Without token (should return 401)
+PUT {{baseUrl}}/users/1
+Content-Type: application/json
+
+{
+    "name": "John Doe Updated Again",
+    "email": "john.doe.updated2@example.com",
+    "phone": "+1234567899"
+}
+
+### Test 19: Update user - Invalid ID (should return 400)
+PUT {{baseUrl}}/users/0
+x-auth: {{token}}
+Content-Type: application/json
+
+{
+    "name": "Test Update",
+    "email": "test.update@example.com",
+    "phone": "+1234567800"
+}
+
+### Test 20: Update user - Non-existing user (should return 404)
+PUT {{baseUrl}}/users/999
+x-auth: {{token}}
+Content-Type: application/json
+
+{
+    "name": "Non Existing User",
+    "email": "nonexisting@example.com",
+    "phone": "+1234567801"
+}
+
+### Test 21: Update user - Missing name (should return 400)
+PUT {{baseUrl}}/users/1
+x-auth: {{token}}
+Content-Type: application/json
+
+{
+    "email": "test.missing.name@example.com",
+    "phone": "+1234567802"
+}
+
+### Test 22: Update user - Duplicate email (should return 400)
+PUT {{baseUrl}}/users/1
+x-auth: {{token}}
+Content-Type: application/json
+
+{
+    "name": "John Updated",
+    "email": "jane.smith@example.com",
+    "phone": "+1234567803"
+}
+
+### Test 23: Delete user - Without token (should return 401)
+DELETE {{baseUrl}}/users/2
+
+### Test 24: Delete user - Invalid ID (should return 400)
+DELETE {{baseUrl}}/users/0
+x-auth: {{token}}
+
+### Test 25: Delete user - Non-existing user (should return 404)
+DELETE {{baseUrl}}/users/999
+x-auth: {{token}}
+
+### Test 26: Delete user - Valid ID (should return 204)
+DELETE {{baseUrl}}/users/2
+x-auth: {{token}}
+
+### Test 27: Verify user was deleted (should return 404)
+GET {{baseUrl}}/users/2
+x-auth: {{token}}
+
+### Test 28: Get logs - Without token (should return 401)
+GET {{baseUrl}}/logs
+
+### Test 29: Get logs - With token (should return 200 with logs)
+GET {{baseUrl}}/logs
+x-auth: {{token}}
+
+### Test 30: Test invalid token (should return 401)
+GET {{baseUrl}}/users
+x-auth: invalid_token
+
+### Test 31: Test empty token (should return 401)
+GET {{baseUrl}}/users
+x-auth: 
+
+### Test 32: Create user with null phone (should work)
+POST {{baseUrl}}/users
+x-auth: {{token}}
+Content-Type: application/json
+
+{
+    "name": "User Without Phone",
+    "email": "nophone@example.com"
+}
+
+
+### Test 34: Get all users after operations (should show remaining users)
+GET {{baseUrl}}/users
+x-auth: {{token}}
